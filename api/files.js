@@ -2,8 +2,12 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { getFile, getFilesWithFolder, createFile } from "#db/queries/files";
-import { getFolder, getFolders } from "#db/queries/folders";
+import { getFilesWithFolder, createFile } from "#db/queries/files";
+import {
+  getFolder,
+  getFolders,
+  getFolderByIdIncludingFiles,
+} from "#db/queries/folders";
 
 router.route("/files").get(async (req, res) => {
   const files = await getFilesWithFolder();
@@ -17,7 +21,7 @@ router.route("/folders").get(async (req, res) => {
 
 router.route("/folders/:id").get(async (req, res) => {
   const { id } = req.params;
-  const folder = await getFolder(id);
+  const folder = await getFolderByIdIncludingFiles(id);
   if (!folder) {
     return res.status(404).send("Folder not found");
   }
