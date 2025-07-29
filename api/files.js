@@ -21,23 +21,26 @@ router.route("/folders/:id").get(async (req, res) => {
   if (!folder) {
     return res.status(404).send("Folder not found");
   }
+  res.send(folder);
 });
 
 router.route("/folders/:id/files").post(async (req, res) => {
+  const { id } = req.params;
   const folder = await getFolder(id);
+
   if (!folder) {
     return res.status(404).send("Folder not found");
   }
 
-  if (!req.body) {
+  if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).send("Request body not provided");
   }
 
-  const { name, size, folder_id } = req.body;
-  if (!name || !size || !folder_id) {
+  const { name, size } = req.body;
+  if (!name || !size) {
     return res.status(400).send("Missing required fields");
   }
 
-  const file = await createFile({ name, size, folder_id });
+  const file = await createFile({ name, size, folder_id: id });
   res.status(201).send(file);
 });

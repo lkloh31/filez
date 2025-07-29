@@ -14,10 +14,12 @@ export async function createFile({ name, size, folder_id }) {
 
 export async function getFilesWithFolder() {
   const sql = `
-  SELECT files.*
-  FROM
-    files
-    JOIN folders ON files.id = folders.file_id
+    SELECT 
+      files.*,
+      folders.name AS folder_name
+    FROM
+      files
+      JOIN folders ON files.folder_id = folders.id
   `;
   const { rows: files } = await db.query(sql);
   return files;
